@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 // Structure for the uHDLC frame
 typedef struct {
@@ -68,6 +69,8 @@ static const uint16_t fcstab[256] = {
 };
 
 uHDLC uHDLC_frame(uint8_t address, uint8_t control, const uint8_t *data, size_t data_length);
+void hdlc_bit_stuffing(const uint8_t* input, size_t input_length, uint8_t* output, size_t* output_length);
+void hdlc_bit_destuffing(const uint8_t* input, size_t input_length, uint8_t* output, size_t* output_length);
 uint16_t fcs_calculation(const uint8_t *data, size_t length);
 void octet_debugging(uint8_t octet);
 void frame_debugging(const uint8_t *frame, size_t size);
