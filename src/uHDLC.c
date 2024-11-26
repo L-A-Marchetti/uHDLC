@@ -3,6 +3,7 @@
 uHDLC uHDLC_encode(uint8_t address, uint8_t control, const uint8_t *data, size_t data_length)
 {
     uHDLC frame;
+    frame.error = 0;
     frame.address = address;
     frame.control = control;
     frame.data_length = data_length;
@@ -47,6 +48,7 @@ uHDLC uHDLC_encode(uint8_t address, uint8_t control, const uint8_t *data, size_t
 
 uHDLC uHDLC_decode(const uint8_t *frame, size_t frame_length) {
     uHDLC decoded_frame;
+    decoded_frame.error = 0;
     if (frame_length < 5 || frame[0] != HDLC_FLAG || frame[frame_length - 1] != HDLC_FLAG)
     {
         printf("Error: Invalid HDLC frame.\n");
