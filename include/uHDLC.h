@@ -26,7 +26,7 @@
 typedef struct {
     uint8_t address;      // Address field (optional) : use HDLC_ADDR_NONE to bypass it.
     uint8_t control;      // Control field (e.g., command type)
-    uint8_t *data;        // Pointer to data payload (user-managed memory)
+    uint8_t data[MAX_FRAME_SIZE-6];
     size_t data_length;   // Length of data payload
     uint16_t fcs;         // Frame Check Sequence
     uint8_t frame[MAX_FRAME_SIZE];
@@ -68,12 +68,13 @@ static const uint16_t fcstab[256] = {
    /* f8 */ 0x7bc7, 0x6a4e, 0x58d5, 0x495c, 0x3de3, 0x2c6a, 0x1ef1, 0x0f78
 };
 
-uHDLC uHDLC_frame(uint8_t address, uint8_t control, const uint8_t *data, size_t data_length);
-void hdlc_bit_stuffing(const uint8_t* input, size_t input_length, uint8_t* output, size_t* output_length);
-void hdlc_bit_destuffing(const uint8_t* input, size_t input_length, uint8_t* output, size_t* output_length);
-uint16_t fcs_calculation(const uint8_t *data, size_t length);
+uHDLC uHDLC_encode(uint8_t address, uint8_t control, const uint8_t *data, size_t data_length);
+uHDLC uHDLC_decode(const uint8_t *frame, size_t frame_length);
+void uHDLC_bs(const uint8_t* input, size_t input_length, uint8_t* output, size_t* output_length);
+void uHDLC_bds(const uint8_t* input, size_t input_length, uint8_t* output, size_t* output_length);
+uint16_t uHDLC_fcs(const uint8_t *data, size_t length);
 void octet_debugging(uint8_t octet);
 void frame_debugging(const uint8_t *frame, size_t size);
-void print_uHDLC_frame(const uHDLC* frame);
+void uHDLC_print(const uHDLC* frame);
 
 #endif //UHDLC_H
