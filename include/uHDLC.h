@@ -20,7 +20,6 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include <stdlib.h>
 
 // Structure for the uHDLC frame
 typedef struct {
@@ -31,6 +30,7 @@ typedef struct {
     uint16_t fcs;         // Frame Check Sequence
     uint8_t frame[MAX_FRAME_SIZE];
     size_t frame_length;
+    int error;
 } uHDLC;
 
 static const uint16_t fcstab[256] = {

@@ -7,6 +7,7 @@ int main()
 {
     const char* data = "Hello,~World";
     uHDLC frame = uHDLC_encode(HDLC_ADDR_NONE, HDLC_I, (const uint8_t *)data, strlen(data));
+    if (frame.error) return 1;
     uHDLC_print(&frame);
     const uint8_t frame_r[] = {
         0x7E,    // Flag
@@ -29,6 +30,7 @@ int main()
         0x7E    // Flag
     };
     uHDLC decode = uHDLC_decode(frame_r, sizeof(frame_r)/sizeof(frame_r[0]));
+    if (decode.error) return 1;
     uHDLC_print(&decode);
     return 0;
 }

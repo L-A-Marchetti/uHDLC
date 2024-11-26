@@ -39,19 +39,20 @@ uHDLC uHDLC_encode(uint8_t address, uint8_t control, const uint8_t *data, size_t
     else
     {
         printf("Error: Frame exceeds maximum size.\n");
-        frame.frame_length = 0;
-        exit(1);
+        frame.error = 1;
+        return frame;
     }
     return frame;
 }
 
 uHDLC uHDLC_decode(const uint8_t *frame, size_t frame_length) {
+    uHDLC decoded_frame;
     if (frame_length < 5 || frame[0] != HDLC_FLAG || frame[frame_length - 1] != HDLC_FLAG)
     {
         printf("Error: Invalid HDLC frame.\n");
-        exit(1);
+        decoded_frame.error = 1;
+        return decoded_frame;
     }
-    uHDLC decoded_frame;
     if (frame_length <= MAX_FRAME_SIZE)
     {
         for (size_t i = 0; i < frame_length; i++)
@@ -63,8 +64,8 @@ uHDLC uHDLC_decode(const uint8_t *frame, size_t frame_length) {
     else
     {
         printf("Error: Frame exceeds maximum size.\n");
-        decoded_frame.frame_length = 0;
-        exit(1);
+        decoded_frame.error = 1;
+        return decoded_frame;
     }
     decoded_frame.address = frame[1];
     decoded_frame.control = frame[2];
@@ -93,7 +94,8 @@ uHDLC uHDLC_decode(const uint8_t *frame, size_t frame_length) {
     if (decoded_frame.fcs != uHDLC_fcs(fcs_data, sizeof(fcs_data)))
     {
         printf("Error: FCS mismatch.\n");
-        exit(1);
+        decoded_frame.error = 1;
+        return decoded_frame;
     }
     return decoded_frame;
 }
