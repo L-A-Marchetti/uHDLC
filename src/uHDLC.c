@@ -33,7 +33,9 @@ uHDLC uHDLC_encode(uint8_t address, uint8_t control, const uint8_t *data, size_t
         {
             frame.frame[3 + i] = stuffed_data[i];
         }
-        *((uint16_t *)&frame.frame[3 + stuffed_data_length]) = frame.fcs;
+        //*((uint16_t *)&frame.frame[3 + stuffed_data_length]) = frame.fcs;
+        frame.frame[3 + stuffed_data_length] = frame.fcs & 0xFF;
+        frame.frame[4 + stuffed_data_length] = (frame.fcs >> 8) & 0xFF;
         frame.frame[full_frame_length - 1] = HDLC_FLAG;
         frame.frame_length = full_frame_length;
     }
@@ -85,7 +87,8 @@ uHDLC uHDLC_decode(const uint8_t *frame, size_t frame_length) {
     {
         decoded_frame.data[i] = destuffed_data[i];
     }
-    decoded_frame.fcs = *((uint16_t *)&frame[3 + stuffed_data_length]);
+    //decoded_frame.fcs = *((uint16_t *)&frame[3 + stuffed_data_length]);
+    decoded_frame.fcs = (frame[3 + stuffed_data_length] | (frame[4 + stuffed_data_length] << 8));
     uint8_t fcs_data[2 + decoded_frame.data_length];
     fcs_data[0] = decoded_frame.address;
     fcs_data[1] = decoded_frame.control;
